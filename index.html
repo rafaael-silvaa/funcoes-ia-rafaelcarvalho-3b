@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oráculo da Fogueira | Perguntas sobre Souls-like</title>
+    <!-- Fonte gótica/medieval carregada com otimização -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="brasas" aria-hidden="true"></canvas>
+    <div class="anel-fundo" aria-hidden="true"></div>
+
+    <main class="palco">
+        <section class="caixa-principal" id="modal" role="dialog" aria-labelledby="titulo">
+            <button class="btn-fechar" id="btnFechar" type="button" aria-label="Fechar">✕</button>
+
+            <!-- Cena 3D: espada cravada na fogueira -->
+            <div class="cena" id="cena" aria-hidden="true">
+                <div class="anel"></div>
+                <div class="halo"></div>
+                <div class="espada" id="espada"></div>
+                <div class="fogo">
+                    <span class="brilho"></span>
+                    <span class="chama c1"></span>
+                    <span class="chama c2"></span>
+                    <span class="chama c3"></span>
+                    <span class="chama c4"></span>
+                </div>
+                <span class="alma a1"></span>
+                <span class="alma a2"></span>
+                <span class="alma a3"></span>
+            </div>
+
+            <header class="cabecalho">
+                <h1 id="titulo">Oráculo da Fogueira</h1>
+                <p>Acesse os registros sombrios de qualquer jogo Souls-like na internet.</p>
+            </header>
+
+            <form class="caixa-perguntas" id="formPergunta" autocomplete="off">
+                <label class="sr-only" for="campoPergunta">Sua pergunta</label>
+                <input id="campoPergunta" type="text" maxlength="300"
+                       placeholder="Ex.: Lore de Bloodborne, chefes de Elden Ring...">
+                <button class="btn btn-sangue" id="btnPerguntar" type="submit">Desvendar</button>
+            </form>
+
+            <div class="caixa-alternativas" id="sugestoes">
+                <button class="chip" type="button">O que é um jogo Souls-like?</button>
+                <button class="chip" type="button">Me fale sobre Elden Ring</button>
+                <button class="chip" type="button">Me fale sobre Sekiro</button>
+                <button class="chip" type="button">Me fale sobre Lies of P</button>
+            </div>
+
+            <div class="caixa-resultado" id="resultado" aria-live="polite" hidden>
+                <div class="barra-voz" id="barraVoz" hidden>
+                    <button class="btn btn-pedra" id="btnOuvir" type="button">▶ Ouvir profecia</button>
+                    <button class="btn btn-pedra" id="btnPausar" type="button" disabled>❚❚ Pausar</button>
+                    <button class="btn btn-pedra" id="btnParar" type="button" disabled>■ Silenciar</button>
+                    <label class="velocidade">Velocidade
+                        <input type="range" id="velocidade" min="0.7" max="1.5" step="0.1" value="1">
+                        <output id="velocidadeValor">1.0x</output>
+                    </label>
+                </div>
+                <div id="conteudo"></div>
+            </div>
+
+            <div class="historico" id="historico" hidden>
+                <h3>Cinzas Recentes</h3>
+                <ul id="listaHistorico"></ul>
+            </div>
+        </section>
+
+        <button class="btn btn-sangue btn-reabrir" id="btnReabrir" type="button" hidden>Acender a Fogueira</button>
+    </main>
+
+    <noscript><p style="position:relative;z-index:2;text-align:center;color:#c5b8a5">Ative o JavaScript para despertar o Oráculo.</p></noscript>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+:root {
+    --abismo: #030202;
+    --carvao: #0a0706;
+    --pedra-sombria: #16120f;
+    --ferro-velho: #2c241e;
+    --ferro-claro: #4d4036;
+    --ouro-antigo: #b8923c;
+    --ouro-brilho: #e6c56b;
+    --sangue-escuro: #5c0d0d;
+    --sangue-vivo: #a81c1c;
+    --brasa-fogo: #ff5500;
+    --texto-cinza: #c5b8a5;
+    --texto-suave: #8a7e6f;
+    --fonte-titulo: "Cinzel", Georgia, serif;
+    --fonte-texto: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+html { color-scheme: dark; }
+
+body {
+    min-height: 100vh;
+    font-family: var(--fonte-texto);
+    color: var(--texto-cinza);
+    line-height: 1.6;
+    overflow-x: hidden;
+    background-color: var(--abismo);
+    background-image:
+        radial-gradient(ellipse 80% 50% at 50% 110%, rgba(168, 28, 28, 0.18), transparent 70%),
+        radial-gradient(circle at 50% 10%, rgba(255, 85, 0, 0.08), transparent 50%),
+        linear-gradient(180deg, #050403 0%, var(--abismo) 100%);
+}
+
+.sr-only {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* ---------- Canvas de Brasas ---------- */
+#brasas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+
+/* ---------- Anel Ornamental de Fundo ---------- */
+.anel-fundo {
+    --base: perspective(1200px) rotateX(78deg);
+    position: fixed; left: 50%; bottom: -350px;
+    width: 1000px; height: 1000px; margin-left: -500px;
+    border-radius: 50%;
+    border: 1px solid rgba(184, 146, 60, 0.12);
+    box-shadow: 0 0 90px rgba(255, 85, 0, 0.08), inset 0 0 80px rgba(168, 28, 28, 0.1);
+    animation: giroZ 80s linear infinite;
+    pointer-events: none; z-index: 0;
+}
+.anel-fundo::before {
+    content: ""; position: absolute; inset: 70px; border-radius: 50%;
+    border: 2px dashed rgba(184, 146, 60, 0.15);
+}
+
+/* ---------- Palco Principal / Modal Sombrio ---------- */
+.palco {
+    position: relative; z-index: 1; min-height: 100vh;
+    display: grid; place-items: center; padding: 24px 12px;
+}
+
+.caixa-principal {
+    position: relative;
+    width: min(100%, 800px);
+    padding: 0 30px 30px;
+    overflow: hidden;
+    border: 1px solid rgba(184, 146, 60, 0.35);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(16, 12, 10, 0.98), rgba(5, 3, 2, 0.99));
+    box-shadow:
+        0 0 0 1px #000,
+        0 40px 100px rgba(0, 0, 0, 0.95),
+        0 0 80px rgba(255, 85, 0, 0.09),
+        inset 0 0 90px rgba(0, 0, 0, 0.7);
+    animation: abrir 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Detalhes de cantos góticos */
+.caixa-principal::before,
+.caixa-principal::after {
+    content: ""; position: absolute; width: 30px; height: 30px;
+    border: 2px solid var(--ouro-antigo); pointer-events: none; z-index: 3;
+}
+.caixa-principal::before { bottom: 10px; left: 10px; border-right: 0; border-top: 0; }
+.caixa-principal::after  { bottom: 10px; right: 10px; border-left: 0; border-top: 0; }
+
+.btn-fechar {
+    position: absolute; top: 12px; right: 14px; z-index: 5;
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 1px solid var(--ferro-claro); background: rgba(5, 3, 2, 0.8);
+    color: var(--texto-suave); font-size: 1rem; cursor: pointer; transition: 0.25s;
+}
+.btn-fechar:hover { color: var(--ouro-brilho); border-color: var(--ouro-antigo); box-shadow: 0 0 16px rgba(184, 146, 60, 0.4); }
+
+.btn-reabrir { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 6; }
+
+/* ---------- Cena 3D da Espada na Fogueira ---------- */
+.cena {
+    --base: perspective(700px) rotateX(72deg);
+    position: relative; height: 260px; margin: 0 -30px; overflow: hidden;
+    perspective: 800px;
+    perspective-origin: var(--px, 50%) var(--py, 45%);
+    border-bottom: 1px solid rgba(184, 146, 60, 0.2);
+    background: radial-gradient(ellipse at 50% 95%, rgba(255, 85, 0, 0.25), transparent 65%);
+}
+
+.anel {
+    position: absolute; left: 50%; bottom: -80px;
+    width: 240px; height: 240px; margin-left: -120px; border-radius: 50%;
+    border: 2px solid rgba(184, 146, 60, 0.5);
+    box-shadow: 0 0 30px rgba(255, 85, 0, 0.35), inset 0 0 30px rgba(255, 85, 0, 0.2);
+    animation: giroZ 20s linear infinite;
+}
+.anel::before { content: ""; position: absolute; inset: 16px; border-radius: 50%; border: 2px dashed rgba(230, 197, 107, 0.4); }
+.anel::after  { content: ""; position: absolute; inset: 40px; border-radius: 50%; border: 3px dotted rgba(255, 85, 0, 0.4); }
+
+.halo {
+    position: absolute; left: 50%; top: 0; width: 140px; height: 140px; margin-left: -70px;
+    border-radius: 50%; border: 1px solid rgba(230, 197, 107, 0.45);
+    box-shadow: 0 0 16px rgba(230, 197, 107, 0.25);
+    animation: giro 8s linear infinite;
+}
+
+.espada {
+    position: absolute; left: 50%; top: 16px; width: 0; height: 190px;
+    transform-style: preserve-3d;
+    animation: giro 10s linear infinite;
+}
+
+.bloco { position: absolute; left: 0; width: 0; height: var(--h); transform-style: preserve-3d; }
+.bloco i { position: absolute; top: 0; height: 100%; background: var(--cor); }
+.bloco i:nth-child(1) { width: var(--w); left: calc(var(--w) / -2); transform: translateZ(calc(var(--d) / 2)); }
+.bloco i:nth-child(2) { width: var(--w); left: calc(var(--w) / -2); transform: rotateY(180deg) translateZ(calc(var(--d) / 2)); box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.35); }
+.bloco i:nth-child(3) { width: var(--d); left: calc(var(--d) / -2); transform: rotateY(90deg) translateZ(calc(var(--w) / 2)); box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.55); }
+.bloco i:nth-child(4) { width: var(--d); left: calc(var(--d) / -2); transform: rotateY(-90deg) translateZ(calc(var(--w) / 2)); box-shadow: inset 0 0 0 100px rgba(0, 0, 0, 0.55); }
+
+.pomo   { --cor: radial-gradient(circle at 35% 30%, #e2c275, #634b12); }
+.cabo   { --cor: repeating-linear-gradient(180deg, #1c140e 0 4px, #4a321f 4px 7px); }
+.guarda { --cor: linear-gradient(180deg, #d1af57, #5c4510); }
+.lamina { --cor: linear-gradient(90deg, #3d3b40, #c4c6cc 50%, #4a484e); }
+.lamina i:nth-child(1), .lamina i:nth-child(2) { clip-path: polygon(0 0, 100% 0, 100% 86%, 50% 100%, 0 86%); }
+.lamina i:nth-child(3), .lamina i:nth-child(4) { clip-path: polygon(0 0, 100% 0, 100% 86%, 0 86%); }
+
+/* Fogo da Fogueira */
+.fogo { position: absolute; left: 50%; bottom: 0; width: 170px; height: 140px; margin-left: -85px; pointer-events: none; }
+.brilho {
+    position: absolute; left: 50%; bottom: -30px; width: 240px; height: 90px; margin-left: -120px;
+    background: radial-gradient(ellipse, rgba(255, 85, 0, 0.5), transparent 70%);
+    animation: pulsar 1.5s ease-in-out infinite alternate;
+}
+.chama {
+    position: absolute; bottom: 6px; left: 50%; transform-origin: 50% 100%;
+    border-radius: 50% 50% 45% 45% / 72% 72% 28% 28%;
+    animation: arder 1.1s ease-in-out infinite alternate;
+}
+.c1 { width: 92px; height: 128px; margin-left: -46px; background: radial-gradient(ellipse at 50% 85%, #ff9e3b 0%, #ff4500 45%, rgba(120, 15, 5, 0) 78%); }
+.c2 { width: 58px; height: 96px; margin-left: -72px; animation-delay: -0.4s; background: radial-gradient(ellipse at 50% 85%, #ff8522 0%, #d63600 45%, rgba(120, 15, 5, 0) 78%); }
+.c3 { width: 58px; height: 104px; margin-left: 14px; animation-delay: -0.8s; background: radial-gradient(ellipse at 50% 85%, #ff8522 0%, #d63600 45%, rgba(120, 15, 5, 0) 78%); }
+.c4 { width: 32px; height: 64px; margin-left: -16px; animation-delay: -0.2s; background: radial-gradient(ellipse at 50% 85%, #fff1b0 0%, #ffb73b 50%, rgba(255, 140, 40, 0) 80%); }
+
+/* Almas Flutuantes */
+.alma {
+    position: absolute; width: 8px; height: 8px; border-radius: 50%;
+    background: radial-gradient(circle, #fff 0, #ffd27a 40%, rgba(255, 210, 122, 0) 75%);
+    box-shadow: 0 0 16px 3px rgba(230, 197, 107, 0.6);
+    animation: flutuar 5.5s ease-in-out infinite;
+}
+.a1 { left: 16%; top: 58%; }
+.a2 { left: 84%; top: 40%; animation-delay: -2.2s; }
+.a3 { left: 28%; top: 20%; animation-delay: -3.8s; }
+
+/* ---------- Cabeçalho ---------- */
+.cabecalho { text-align: center; padding: 22px 0 8px; }
+.cabecalho h1 {
+    font-family: var(--fonte-titulo); font-size: clamp(1.6rem, 5vw, 2.3rem);
+    letter-spacing: 0.1em; color: var(--ouro-brilho); text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(255, 85, 0, 0.6);
+}
+.cabecalho p { color: var(--texto-suave); margin-top: 6px; font-size: 0.95rem; }
+
+/* ---------- Pergunta e Inputs ---------- */
+.caixa-perguntas { display: flex; gap: 10px; margin-top: 18px; }
+.caixa-perguntas input {
+    flex: 1; min-width: 0; padding: 14px 18px; font-size: 1rem;
+    background: #060403; color: var(--texto-cinza);
+    border: 1px solid var(--ferro-claro); border-radius: 8px; outline: none; transition: 0.25s;
+}
+.caixa-perguntas input::placeholder { color: #574b3f; }
+.caixa-perguntas input:focus { border-color: var(--ouro-antigo); box-shadow: 0 0 0 3px rgba(184, 146, 60, 0.18), 0 0 20px rgba(255, 85, 0, 0.2); }
+
+.btn {
+    padding: 12px 22px; border-radius: 8px; cursor: pointer;
+    font-family: var(--fonte-titulo); font-weight: 700; letter-spacing: 0.08em; font-size: 0.9rem;
+    color: var(--ouro-brilho); border: 1px solid var(--ouro-antigo); transition: 0.25s;
+}
+.btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 0 20px rgba(255, 85, 0, 0.4); background-color: rgba(184, 146, 60, 0.1); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-sangue { background: linear-gradient(180deg, var(--sangue-vivo), var(--sangue-escuro)); }
+.btn-pedra  { background: linear-gradient(180deg, #241d18, #120e0c); border-color: var(--ferro-claro); padding: 9px 14px; font-size: 0.8rem; }
+
+.caixa-alternativas { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.chip {
+    padding: 7px 14px; border-radius: 999px; cursor: pointer; font-size: 0.85rem;
+    color: var(--texto-suave); background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--ferro-claro); transition: 0.25s;
+}
+.chip:hover { color: var(--ouro-brilho); border-color: var(--ouro-antigo); background: rgba(184, 146, 60, 0.1); }
+
+/* ---------- Resultado ---------- */
+.caixa-resultado {
+    margin-top: 22px; padding: 20px; border-radius: 10px;
+    border: 1px solid rgba(184, 146, 60, 0.3); background: rgba(8, 6, 5, 0.85);
+    animation: surgir 0.4s ease both;
+}
+.barra-voz { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-bottom: 14px; margin-bottom: 6px; border-bottom: 1px solid rgba(184, 146, 60, 0.2); }
+.velocidade { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: 0.8rem; color: var(--texto-suave); }
+.velocidade input { width: 90px; accent-color: var(--brasa-fogo); }
+.velocidade output { min-width: 34px; color: var(--ouro-brilho); }
+
+.pergunta-eco { font-family: var(--fonte-titulo); font-size: 1.1rem; color: var(--ouro-brilho); margin: 14px 0 10px; letter-spacing: 0.05em; }
+.texto-resultado p { margin-bottom: 14px; font-size: 1.02rem; color: #d6ccbe; }
+
+.carregando { display: flex; align-items: center; gap: 12px; color: var(--texto-suave); padding: 8px 0; }
+.carregando .brasa-mini {
+    flex-shrink: 0; width: 14px; height: 14px; border-radius: 50%;
+    background: radial-gradient(circle, #ffe29a, var(--brasa-fogo) 60%, transparent 75%);
+    animation: pulsar 0.7s ease-in-out infinite alternate;
+}
+.erro { padding: 14px; border-left: 3px solid var(--sangue-vivo); border-radius: 6px; background: rgba(92, 13, 13, 0.3); color: #f5cfcf; }
+
+/* ---------- Fontes e Registros ---------- */
+.fontes { margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(184, 146, 60, 0.2); }
+.fontes h3, .historico h3 { font-family: var(--fonte-titulo); font-size: 0.9rem; letter-spacing: 0.1em; color: var(--ouro-antigo); text-transform: uppercase; margin-bottom: 10px; }
+.fontes ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 8px; }
+.fontes a {
+    display: block; padding: 10px 14px; border-radius: 8px; text-decoration: none; font-size: 0.88rem;
+    color: var(--ouro-brilho); background: rgba(255, 255, 255, 0.015); border: 1px solid var(--ferro-claro); transition: 0.25s;
+}
+.fontes a:hover { border-color: var(--ouro-antigo); box-shadow: 0 0 16px rgba(255, 85, 0, 0.3); background: rgba(184, 146, 60, 0.05); }
+.fonte-nome { display: block; font-weight: 600; line-height: 1.3; }
+.fonte-dominio { display: block; margin-top: 2px; font-size: 0.75rem; color: var(--texto-suave); }
+.aviso { margin-top: 10px; font-size: 0.78rem; color: var(--texto-suave); }
+
+/* ---------- Histórico ---------- */
+.historico { margin-top: 22px; }
+.historico ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.historico button {
+    width: 100%; text-align: left; padding: 9px 14px; border-radius: 6px; cursor: pointer;
+    font-size: 0.88rem; color: var(--texto-suave); background: transparent; border: 1px solid transparent; transition: 0.25s;
+}
+.historico button:hover { color: var(--ouro-brilho); border-color: var(--ferro-claro); background: rgba(255, 255, 255, 0.02); }
+
+/* ---------- Animações ---------- */
+@keyframes giro    { to { transform: rotateY(360deg); } }
+@keyframes giroZ   { from { transform: var(--base) rotateZ(0deg); } to { transform: var(--base) rotateZ(360deg); } }
+@keyframes arder   { 0% { transform: scale(1, 1) rotate(-2deg); } 100% { transform: scale(0.9, 1.12) rotate(2deg); } }
+@keyframes pulsar  { from { opacity: 0.6; transform: scale(0.94); } to { opacity: 1; transform: scale(1.05); } }
+@keyframes flutuar { 0%, 100% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(-24px); opacity: 1; } }
+@keyframes abrir   { from { opacity: 0; transform: translateY(28px) scale(0.95); } to { opacity: 1; transform: none; } }
+@keyframes surgir  { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+@media (max-width: 560px) {
+    .caixa-principal { padding: 0 14px 20px; }
+    .cena { margin: 0 -14px; height: 230px; }
+    .caixa-perguntas { flex-direction: column; }
+    .velocidade { margin-left: 0; width: 100%; }
+}
